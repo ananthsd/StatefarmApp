@@ -7,16 +7,15 @@ import android.location.Address;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -81,7 +80,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
         final EditText searchText = findViewById(R.id.searchText);
         final TextView zipCodeText = findViewById(R.id.zipText);
-        final TextView damageText = findViewById(R.id.damageText);
+        final TextView damageText = findViewById(R.id.averageDamageText);
+        final RecyclerView damageRecyclerView = findViewById(R.id.damageRecyclerView);
+        damageRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL,false));
+        final FemaHousingAssistenceAdapter adapter = new FemaHousingAssistenceAdapter();
+        damageRecyclerView.setAdapter(adapter);
         searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(final TextView v, int actionId, KeyEvent event) {
@@ -102,9 +105,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPoint, 10));
                             if (address.getPostalCode() == null) {
-                                zipCodeText.setText(address.getFeatureName());
-                                damageText.setText("");
-                                Toast.makeText(getApplicationContext(), "Couldn't get FEMA data", Toast.LENGTH_LONG).show();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        zipCodeText.setText(address.getFeatureName());
+                                        damageText.setText("");
+                                        Toast.makeText(getApplicationContext(), "Couldn't get FEMA data", Toast.LENGTH_LONG).show();
+                                    }
+                                });
                                 return;
                             }
                             femaService.getFemaHousingOwnersDamage("zipCode%20eq%20" + address.getPostalCode()).subscribeOn(Schedulers.io()).subscribe(new DisposableObserver<Response<FemaHousingOwnersDamageResponse>>() {
@@ -119,7 +127,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                 if (owners.size() > 0) {
                                                     zipCodeText.setText(address.getPostalCode());
                                                     damageText.setText(owners.size() + " damage records");
+                                                    adapter.setmDataset(owners);
                                                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                                                }
+                                                else{
+                                                    zipCodeText.setText(address.getPostalCode());
+                                                    damageText.setText("No damage records found");
                                                 }
                                             }
                                         });

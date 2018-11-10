@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/cityText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="City, State"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/numInspectedText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="17/20 FEMA applicants inspected approved for assistence"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/cityText"
+        app:layout_constraintTop_toBottomOf="@+id/cityText" />
+
+    <TextView
+        android:id="@+id/averageDamageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$2000 average damage"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/cityText"
+        app:layout_constraintTop_toBottomOf="@+id/numInspectedText" />
+
+    <TextView
+        android:id="@+id/totalDamageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$40000 total damage"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/cityText"
+        app:layout_constraintTop_toBottomOf="@+id/averageDamageText" />
+    <TextView
+        android:id="@+id/totalPaidText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$30000 in assistence paid out"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/cityText"
+        app:layout_constraintTop_toBottomOf="@+id/totalDamageText" />
+    <TextView
+        android:id="@+id/disasterNumberText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="#1557"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</android.support.constraint.ConstraintLayout>

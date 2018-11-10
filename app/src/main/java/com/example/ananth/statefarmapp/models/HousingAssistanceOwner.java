@@ -26,13 +26,13 @@ public class HousingAssistanceOwner {
     private int validRegistrations;
     @SerializedName("averageFemaInspectedDamage")
     @Expose
-    private int averageFemaInspectedDamage;
+    private double averageFemaInspectedDamage;
     @SerializedName("totalInspected")
     @Expose
     private int totalInspected;
     @SerializedName("totalDamage")
     @Expose
-    private int totalDamage;
+    private double totalDamage;
     @SerializedName("noFemaInspectedDamage")
     @Expose
     private int noFemaInspectedDamage;
@@ -53,16 +53,16 @@ public class HousingAssistanceOwner {
     private int approvedForFemaAssistance;
     @SerializedName("totalApprovedIhpAmount")
     @Expose
-    private int totalApprovedIhpAmount;
+    private double totalApprovedIhpAmount;
     @SerializedName("repairReplaceAmount")
     @Expose
-    private int repairReplaceAmount;
+    private double repairReplaceAmount;
     @SerializedName("rentalAmount")
     @Expose
-    private int rentalAmount;
+    private double rentalAmount;
     @SerializedName("otherNeedsAmount")
     @Expose
-    private int otherNeedsAmount;
+    private double otherNeedsAmount;
     @SerializedName("approvedBetween1And10000")
     @Expose
     private int approvedBetween1And10000;
@@ -74,7 +74,7 @@ public class HousingAssistanceOwner {
     private int approvedBetween25001AndMax;
     @SerializedName("totalMaxGrants")
     @Expose
-    private int totalMaxGrants;
+    private double totalMaxGrants;
     @SerializedName("hash")
     @Expose
     private String hash;
@@ -133,11 +133,11 @@ public class HousingAssistanceOwner {
         this.validRegistrations = validRegistrations;
     }
 
-    public int getAverageFemaInspectedDamage() {
+    public double getAverageFemaInspectedDamage() {
         return averageFemaInspectedDamage;
     }
 
-    public void setAverageFemaInspectedDamage(int averageFemaInspectedDamage) {
+    public void setAverageFemaInspectedDamage(double averageFemaInspectedDamage) {
         this.averageFemaInspectedDamage = averageFemaInspectedDamage;
     }
 
@@ -149,11 +149,11 @@ public class HousingAssistanceOwner {
         this.totalInspected = totalInspected;
     }
 
-    public int getTotalDamage() {
+    public double getTotalDamage() {
         return totalDamage;
     }
 
-    public void setTotalDamage(int totalDamage) {
+    public void setTotalDamage(double totalDamage) {
         this.totalDamage = totalDamage;
     }
 
@@ -205,35 +205,35 @@ public class HousingAssistanceOwner {
         this.approvedForFemaAssistance = approvedForFemaAssistance;
     }
 
-    public int getTotalApprovedIhpAmount() {
+    public double getTotalApprovedIhpAmount() {
         return totalApprovedIhpAmount;
     }
 
-    public void setTotalApprovedIhpAmount(int totalApprovedIhpAmount) {
+    public void setTotalApprovedIhpAmount(double totalApprovedIhpAmount) {
         this.totalApprovedIhpAmount = totalApprovedIhpAmount;
     }
 
-    public int getRepairReplaceAmount() {
+    public double getRepairReplaceAmount() {
         return repairReplaceAmount;
     }
 
-    public void setRepairReplaceAmount(int repairReplaceAmount) {
+    public void setRepairReplaceAmount(double repairReplaceAmount) {
         this.repairReplaceAmount = repairReplaceAmount;
     }
 
-    public int getRentalAmount() {
+    public double getRentalAmount() {
         return rentalAmount;
     }
 
-    public void setRentalAmount(int rentalAmount) {
+    public void setRentalAmount(double rentalAmount) {
         this.rentalAmount = rentalAmount;
     }
 
-    public int getOtherNeedsAmount() {
+    public double getOtherNeedsAmount() {
         return otherNeedsAmount;
     }
 
-    public void setOtherNeedsAmount(int otherNeedsAmount) {
+    public void setOtherNeedsAmount(double otherNeedsAmount) {
         this.otherNeedsAmount = otherNeedsAmount;
     }
 
@@ -261,7 +261,7 @@ public class HousingAssistanceOwner {
         this.approvedBetween25001AndMax = approvedBetween25001AndMax;
     }
 
-    public int getTotalMaxGrants() {
+    public double getTotalMaxGrants() {
         return totalMaxGrants;
     }
 

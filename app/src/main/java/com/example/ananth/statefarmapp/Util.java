@@ -52,7 +52,10 @@ public class Util {
                         return null;
                     }
                     Address location = address.get(0);
-                    if(!location.hasLatitude()||!location.hasLongitude()){
+                    if(location.getPostalCode()!=null){
+                        return location;
+                    }
+                    if(!(location.hasLatitude()&&location.hasLongitude())){
                         return location;
                     }
                     List<Address> newAddresses = coder.getFromLocation(location.getLatitude(), location.getLongitude(), 5);
