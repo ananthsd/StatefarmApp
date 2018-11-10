@@ -59,7 +59,7 @@ public class FemaHousingAssistenceAdapter extends RecyclerView.Adapter<FemaHousi
         holder.cityText.setText(owner.getCity());
         holder.numInspectedText.setText(owner.getApprovedForFemaAssistance()+"/"+owner.getTotalInspected()+" FEMA applicants inspected approved for assistence");
 
-        holder.averageDamageText.setText("$"+formatter.format(owner.getAverageFemaInspectedDamage())+" average damage");
+        holder.averageDamageText.setText("$"+formatter.format(owner.getAverageFemaInspectedDamage())+" damage on average ");
         holder.totalDamageText.setText("$"+formatter.format(owner.getTotalDamage())+" total damage");
         holder.totalPaidText.setText("$"+formatter.format(owner.getTotalApprovedIhpAmount())+" in assistence paid out");
         holder.disasterNumberText.setText("#"+owner.getDisasterNumber());

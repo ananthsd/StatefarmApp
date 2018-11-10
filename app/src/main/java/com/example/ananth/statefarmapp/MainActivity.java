@@ -16,8 +16,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +33,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -82,6 +85,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         final TextView zipCodeText = findViewById(R.id.zipText);
         final TextView damageText = findViewById(R.id.averageDamageText);
         final RecyclerView damageRecyclerView = findViewById(R.id.damageRecyclerView);
+        final ProgressBar searchProgressBar = findViewById(R.id.searchProgress);
+        searchProgressBar.setVisibility(View.GONE);
         damageRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL,false));
         final FemaHousingAssistenceAdapter adapter = new FemaHousingAssistenceAdapter();
         damageRecyclerView.setAdapter(adapter);
@@ -90,6 +95,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             public boolean onEditorAction(final TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    searchProgressBar.setVisibility(View.VISIBLE);
                     handled = true;
                     mMap.clear();
                     Util.getAddressFromAddressString(searchText.getText().toString(), getApplicationContext()).subscribe(new DisposableObserver<Address>() {
@@ -111,6 +117,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                         zipCodeText.setText(address.getFeatureName());
                                         damageText.setText("");
                                         Toast.makeText(getApplicationContext(), "Couldn't get FEMA data", Toast.LENGTH_LONG).show();
+                                        searchProgressBar.setVisibility(View.GONE);
                                     }
                                 });
                                 return;
@@ -128,17 +135,30 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                     zipCodeText.setText(address.getPostalCode());
                                                     damageText.setText(owners.size() + " damage records");
                                                     adapter.setmDataset(owners);
+                                                    findViewById(R.id.bottomSheet).setVisibility(View.VISIBLE);
                                                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                                                 }
                                                 else{
                                                     zipCodeText.setText(address.getPostalCode());
                                                     damageText.setText("No damage records found");
+                                                    adapter.setmDataset(new ArrayList<HousingAssistanceOwner>());
                                                 }
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        searchProgressBar.setVisibility(View.GONE);
+                                                    }
+                                                });
                                             }
                                         });
                                     } else {
                                         Log.v("fema", femaHousingOwnersDamageResponse.raw().request().url().toString());
-
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                searchProgressBar.setVisibility(View.GONE);
+                                            }
+                                        });
                                     }
 
                                 }
@@ -148,12 +168,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                     Log.v("error", "error getting data");
                                     Log.v("error", "error: " + e.getMessage());
 
-
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getApplicationContext(), "Error getting data", Toast.LENGTH_LONG).show();
+                                            searchProgressBar.setVisibility(View.GONE);
+                                        }
+                                    });
                                 }
 
                                 @Override
                                 public void onComplete() {
-
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            searchProgressBar.setVisibility(View.GONE);
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -161,11 +192,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         @Override
                         public void onError(Throwable e) {
                             Toast.makeText(getApplicationContext(), "Couldn't find place", Toast.LENGTH_LONG).show();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    searchProgressBar.setVisibility(View.GONE);
+                                }
+                            });
                         }
 
                         @Override
                         public void onComplete() {
-
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    searchProgressBar.setVisibility(View.GONE);
+                                }
+                            });
                         }
                     });
 
@@ -176,6 +218,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         femaService = femaRetrofit.create(FEMAService.class);
         bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheet));
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        findViewById(R.id.bottomSheet).setVisibility(View.GONE);
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
