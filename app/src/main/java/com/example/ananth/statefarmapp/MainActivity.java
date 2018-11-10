@@ -7,20 +7,23 @@ import android.location.Address;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ananth.statefarmapp.models.FemaHousingOwnersDamageResponse;
+import com.example.ananth.statefarmapp.models.HousingAssistanceOwner;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,7 +32,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.lang.annotation.Retention;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,7 +49,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Inject
     @Named("FEMAClient")
     Retrofit femaRetrofit;
-
+    private BottomSheetBehavior bottomSheetBehavior;
     private FEMAService femaService;
 
     @Override
@@ -77,6 +80,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         final EditText searchText = findViewById(R.id.searchText);
+        final TextView zipCodeText = findViewById(R.id.zipText);
+        final TextView damageText = findViewById(R.id.damageText);
         searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(final TextView v, int actionId, KeyEvent event) {
@@ -84,32 +89,52 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     handled = true;
                     mMap.clear();
-                    Util.getAddressFromAddressString(searchText.getText().toString(),getApplicationContext()).subscribe(new DisposableObserver<Address>() {
+                    Util.getAddressFromAddressString(searchText.getText().toString(), getApplicationContext()).subscribe(new DisposableObserver<Address>() {
                         @Override
-                        public void onNext(Address address) {
+                        public void onNext(final Address address) {
                             if (address == null) {
                                 Toast.makeText(getApplicationContext(), "Couldn't find place", Toast.LENGTH_LONG).show();
                             }
-                            LatLng searchPoint =  new LatLng((address.getLatitude()),
+                            LatLng searchPoint = new LatLng((address.getLatitude()),
                                     (address.getLongitude()));
 
                             mMap.addMarker(new MarkerOptions().position(searchPoint).title(v.getText().toString()));
+
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPoint, 10));
-                            femaService.getFemaHousingOwnersDamage("zipCode%20eq%20"+address.getPostalCode()).subscribeOn(Schedulers.io()).subscribe(new DisposableObserver<Response<FemaHousingOwnersDamageResponse>>() {
+                            if (address.getPostalCode() == null) {
+                                zipCodeText.setText(address.getFeatureName());
+                                damageText.setText("");
+                                Toast.makeText(getApplicationContext(), "Couldn't get FEMA data", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            femaService.getFemaHousingOwnersDamage("zipCode%20eq%20" + address.getPostalCode()).subscribeOn(Schedulers.io()).subscribe(new DisposableObserver<Response<FemaHousingOwnersDamageResponse>>() {
                                 @Override
-                                public void onNext(Response<FemaHousingOwnersDamageResponse> femaHousingOwnersDamageResponse) {
-                                    if(femaHousingOwnersDamageResponse.isSuccessful()) {
+                                public void onNext(final Response<FemaHousingOwnersDamageResponse> femaHousingOwnersDamageResponse) {
+                                    if (femaHousingOwnersDamageResponse.isSuccessful()) {
                                         Log.v("fema", "recievedData:" + femaHousingOwnersDamageResponse.body().getMetadata().getUrl());
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                List<HousingAssistanceOwner> owners = femaHousingOwnersDamageResponse.body().getHousingAssistanceOwners();
+                                                if (owners.size() > 0) {
+                                                    zipCodeText.setText(address.getPostalCode());
+                                                    damageText.setText(owners.size() + " damage records");
+                                                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        Log.v("fema", femaHousingOwnersDamageResponse.raw().request().url().toString());
+
                                     }
-                                    else{
-                                        Log.v("fema",femaHousingOwnersDamageResponse.raw().request().url().toString());
-                                    }
+
                                 }
 
                                 @Override
                                 public void onError(Throwable e) {
-                                    Log.v("error","error getting data");
-                                    Log.v("error","error: "+e.getMessage());
+                                    Log.v("error", "error getting data");
+                                    Log.v("error", "error: " + e.getMessage());
+
 
                                 }
 
@@ -136,6 +161,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         femaService = femaRetrofit.create(FEMAService.class);
+        bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheet));
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        final DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        bottomSheetBehavior.setHideable(false);
+        bottomSheetBehavior.setPeekHeight(200);
+        //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_SETTLING);
     }
 
     @Override

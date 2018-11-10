@@ -52,8 +52,14 @@ public class Util {
                         return null;
                     }
                     Address location = address.get(0);
-
-                    return location;
+                    if(!location.hasLatitude()||!location.hasLongitude()){
+                        return location;
+                    }
+                    List<Address> newAddresses = coder.getFromLocation(location.getLatitude(), location.getLongitude(), 5);
+                    if(newAddresses==null||newAddresses.size()==0||newAddresses.get(0).getPostalCode()==null){
+                        return location;
+                    }
+                    return newAddresses.get(0);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
