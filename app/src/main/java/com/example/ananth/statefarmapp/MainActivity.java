@@ -10,6 +10,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -17,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
     private GoogleMap mMap;
@@ -48,6 +56,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         ACCESS_FINE_LOCATION_CODE);
             }
         }
+        final EditText searchText = findViewById(R.id.searchText);
+        searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    handled = true;
+                    mMap.clear();
+                    LatLng searchPoint = Util.getLocationFromAddress(searchText.getText().toString(),getApplicationContext());
+                    if(searchPoint == null){
+                        Toast.makeText(getApplicationContext(), "Couldn't find place", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    mMap.addMarker(new MarkerOptions().position(searchPoint).title(v.getText().toString()));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPoint, 10));
+                }
+                return handled;
+            }
+        });
     }
     @Override
     public void onLocationChanged(Location location) {
