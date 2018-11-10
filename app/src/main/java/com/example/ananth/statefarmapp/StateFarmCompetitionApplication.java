@@ -4,7 +4,7 @@ import android.app.Application;
 
 public class StateFarmCompetitionApplication extends Application {
     private NetworkComponent networkComponent;
-    private final String femaBaseURL = "";
+    private final String femaBaseURL = "https://www.fema.gov/api/open/v1/";
     private final String osmBaseURL = "";
     @Override
     public void onCreate() {

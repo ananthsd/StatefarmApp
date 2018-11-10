@@ -5,7 +5,6 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import retrofit2.Retrofit;
-
 @Singleton
 @Component(modules = {FEMANetworkModule.class, OSMNetworkModule.class, AppModule.class})
 public interface NetworkComponent {
