@@ -1,12 +1,16 @@
 package com.example.ananth.statefarmapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.Callable;
@@ -20,7 +24,7 @@ public class Util {
     }
 
     public static SearchState currentSearch = SearchState.ZIP_CODE;
-
+    public static final DecimalFormat formatter = new DecimalFormat("#,###.00");
     public static LatLng getLocationFromAddress(String strAddress, Context context) {
 
         Geocoder coder = new Geocoder(context);
@@ -88,6 +92,16 @@ public class Util {
                 return null;
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+
+    }
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        if(activity.getCurrentFocus()!=null){
+            inputMethodManager.hideSoftInputFromWindow(
+                    activity.getCurrentFocus().getWindowToken(), 0);
+        }
 
     }
 }

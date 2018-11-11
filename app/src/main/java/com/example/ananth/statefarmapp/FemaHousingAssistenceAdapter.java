@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.example.ananth.statefarmapp.Util.formatter;
+
 public class FemaHousingAssistenceAdapter extends RecyclerView.Adapter<FemaHousingAssistenceAdapter.MyViewHolder> {
     private List<HousingAssistanceOwner> mDataset;
 
@@ -52,7 +54,7 @@ public class FemaHousingAssistenceAdapter extends RecyclerView.Adapter<FemaHousi
         return vh;
     }
 
-    DecimalFormat formatter = new DecimalFormat("#,###.00");
+
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         HousingAssistanceOwner owner = mDataset.get(position);

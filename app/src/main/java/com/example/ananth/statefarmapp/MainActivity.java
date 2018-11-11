@@ -106,6 +106,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             public boolean onEditorAction(final TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    Util.hideKeyboard(MainActivity.this);
                     searchProgressBar.setVisibility(View.VISIBLE);
                     handled = true;
                     mMap.clear();
@@ -170,7 +171,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                     else if(Util.currentSearch == Util.SearchState.CITY){
                                                         zipCodeText.setText(address.getLocality());
                                                     }
-                                                    damageText.setText(owners.size() + " damage records");
+                                                    double totalCost = 0;
+                                                    for (HousingAssistanceOwner owner:owners) {
+                                                        totalCost+=owner.getTotalDamage();
+                                                    }
+                                                    damageText.setText(owners.size() + " damage records totalling $"+Util.formatter.format(totalCost));
                                                     adapter.setmDataset(owners);
                                                     findViewById(R.id.bottomSheet).setVisibility(View.VISIBLE);
                                                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
