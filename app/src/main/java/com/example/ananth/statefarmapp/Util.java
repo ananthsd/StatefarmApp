@@ -106,6 +106,7 @@ public class Util {
         }
 
     }
+
     //Ty to the person on stackoverflow who made this
     //https://stackoverflow.com/a/11006236/4833158
     public static final Map<String, String> states = new HashMap<String, String>();
