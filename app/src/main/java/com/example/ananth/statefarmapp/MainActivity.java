@@ -173,10 +173,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                         zipCodeText.setText(address.getLocality());
                                                     }
                                                     double totalCost = 0;
+                                                    double paidCost = 0;
                                                     for (HousingAssistanceOwner owner:owners) {
                                                         totalCost+=owner.getTotalDamage();
+                                                        paidCost+=owner.getTotalApprovedIhpAmount();
                                                     }
-                                                    damageText.setText(owners.size() + " damage records totalling $"+Util.formatter.format(totalCost));
+                                                    damageText.setText(owners.size() + " damage records totalling $"+Util.formatter.format(totalCost)+" \n with $"+Util.formatter.format(paidCost)+" paid out");
                                                     adapter.setmDataset(owners);
                                                     findViewById(R.id.bottomSheet).setVisibility(View.VISIBLE);
                                                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -270,7 +272,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         bottomSheetBehavior.setHideable(false);
-        bottomSheetBehavior.setPeekHeight(200);
+        bottomSheetBehavior.setPeekHeight(400);
         FloatingActionButton searchSelectFAB = findViewById(R.id.selectSearchSettingFAB);
         searchSelectFAB.setOnClickListener(new View.OnClickListener() {
             @Override
