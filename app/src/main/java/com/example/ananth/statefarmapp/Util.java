@@ -15,6 +15,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class Util {
+    enum SearchState {
+        CITY, ZIP_CODE
+    }
+
+    public static SearchState currentSearch = SearchState.ZIP_CODE;
+
     public static LatLng getLocationFromAddress(String strAddress, Context context) {
 
         Geocoder coder = new Geocoder(context);
@@ -52,16 +58,29 @@ public class Util {
                         return null;
                     }
                     Address location = address.get(0);
-                    if(location.getPostalCode()!=null){
-                        return location;
+                    if (currentSearch == SearchState.ZIP_CODE) {
+                        if (location.getPostalCode() != null) {
+                            return location;
+                        }
+                    } else if (currentSearch == SearchState.CITY) {
+                        if (location.getLocality() != null) {
+                            return location;
+                        }
                     }
-                    if(!(location.hasLatitude()&&location.hasLongitude())){
+                    if (!(location.hasLatitude() && location.hasLongitude())) {
                         return location;
                     }
                     List<Address> newAddresses = coder.getFromLocation(location.getLatitude(), location.getLongitude(), 5);
-                    if(newAddresses==null||newAddresses.size()==0||newAddresses.get(0).getPostalCode()==null){
-                        return location;
+                    if (currentSearch == SearchState.ZIP_CODE) {
+                        if (newAddresses == null || newAddresses.size() == 0 || newAddresses.get(0).getPostalCode() == null) {
+                            return location;
+                        }
+                    } else if (currentSearch == SearchState.CITY) {
+                        if (newAddresses == null || newAddresses.size() == 0 || newAddresses.get(0).getLocality() == null) {
+                            return location;
+                        }
                     }
+
                     return newAddresses.get(0);
                 } catch (IOException e) {
                     e.printStackTrace();
