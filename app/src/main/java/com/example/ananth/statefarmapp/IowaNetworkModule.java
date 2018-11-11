@@ -10,14 +10,14 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
-public class OSMNetworkModule {
+public class IowaNetworkModule {
     public final String BASE_URL;
-    public OSMNetworkModule(String baseUrl){
+    public IowaNetworkModule(String baseUrl){
         BASE_URL = baseUrl;
     }
     @Provides
     @Singleton
-    @Named("OSMClient")
+    @Named("IowaClient")
     Retrofit getClient(){
         return new Retrofit.Builder().baseUrl(BASE_URL).addCallAdapterFactory(RxJava2CallAdapterFactory.create()).addConverterFactory(GsonConverterFactory.create()).build();
     }

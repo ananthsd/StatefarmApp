@@ -34,8 +34,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ananth.statefarmapp.models.Feature;
 import com.example.ananth.statefarmapp.models.FemaHousingOwnersDamageResponse;
 import com.example.ananth.statefarmapp.models.HousingAssistanceOwner;
+import com.example.ananth.statefarmapp.models.IowaResponse;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,6 +45,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,15 +66,19 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Inject
     @Named("FEMAClient")
     Retrofit femaRetrofit;
+    @Inject
+    @Named("IowaClient")
+    Retrofit iowaRetrofit;
     private BottomSheetBehavior bottomSheetBehavior;
     private FEMAService femaService;
+    private IOWAService iowaService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         DaggerMainActivityComponent.builder().networkComponent(((StateFarmCompetitionApplication) getApplication()).getNetworkComponent()).build().inject(this);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -109,7 +117,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Util.hideKeyboard(MainActivity.this);
                     searchProgressBar.setVisibility(View.VISIBLE);
                     handled = true;
-                    mMap.clear();
+                    //mMap.clear();
                     Util.getAddressFromAddressString(searchText.getText().toString(), getApplicationContext()).subscribe(new DisposableObserver<Address>() {
                         @Override
                         public void onNext(final Address address) {
@@ -265,12 +273,50 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         femaService = femaRetrofit.create(FEMAService.class);
+        iowaService = iowaRetrofit.create(IOWAService.class);
+        iowaService.getIowaCrashData().subscribeOn(Schedulers.io()).subscribe(new DisposableObserver<Response<IowaResponse>>() {
+            @Override
+            public void onNext(final Response<IowaResponse> iowaResponseResponse) {
+                if(iowaResponseResponse.isSuccessful()){
+                    Log.v("iowa","successful");
+                    final List<LatLng> crashList = new ArrayList<>();
+
+                    for (Feature feature: iowaResponseResponse.body().getFeatures()) {
+                        crashList.add(new LatLng(feature.getGeometry().getY(),feature.getGeometry().getX()));
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            HeatmapTileProvider mProvider = new HeatmapTileProvider.Builder()
+                                    .data(crashList)
+                                    .build();
+                            mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+                            //CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(crashList.get(0), 10);
+                            //mMap.animateCamera(cameraUpdate);
+                        }
+                    });
+
+                }
+                else{
+                    Log.v("iowa","failed");
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.v("iowa","error "+e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
         bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheet));
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         findViewById(R.id.bottomSheet).setVisibility(View.GONE);
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
         bottomSheetBehavior.setHideable(false);
         bottomSheetBehavior.setPeekHeight(400);
         FloatingActionButton searchSelectFAB = findViewById(R.id.selectSearchSettingFAB);
@@ -359,4 +405,5 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
     }
+
 }
