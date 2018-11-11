@@ -153,7 +153,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             if (Util.currentSearch == Util.SearchState.ZIP_CODE) {
                                 searchString = "zipCode%20eq%20" + address.getPostalCode();
                             } else if (Util.currentSearch == Util.SearchState.CITY) {
-                                searchString = "city%20eq%20%27"+address.getLocality().toUpperCase()+"%27";
+                                //$filter=city%20eq%20%27HOUSTON%27%20and%20state%20eq%20%27TX%27
+                                searchString = "city%20eq%20%27"+address.getLocality().toUpperCase()+"%27%20and%20state%20eq%20%27"+Util.states.get(address.getAdminArea())+"%27";
                             }
                             femaService.getFemaHousingOwnersDamage(searchString).subscribeOn(Schedulers.io()).subscribe(new DisposableObserver<Response<FemaHousingOwnersDamageResponse>>() {
                                 @Override

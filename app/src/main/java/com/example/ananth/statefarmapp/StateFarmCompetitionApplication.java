@@ -10,6 +10,7 @@ public class StateFarmCompetitionApplication extends Application {
     public void onCreate() {
         super.onCreate();
         networkComponent = DaggerNetworkComponent.builder().fEMANetworkModule(new FEMANetworkModule(femaBaseURL)).oSMNetworkModule(new OSMNetworkModule(osmBaseURL)).build();
+        Util.initStateMap();
     }
     public NetworkComponent getNetworkComponent(){
         return networkComponent;
