@@ -59,7 +59,7 @@ public class FemaHousingAssistenceAdapter extends RecyclerView.Adapter<FemaHousi
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         HousingAssistanceOwner owner = mDataset.get(position);
         holder.cityText.setText(owner.getCity());
-        holder.numInspectedText.setText(owner.getApprovedForFemaAssistance()+"/"+owner.getTotalInspected()+" FEMA applicants inspected approved for assistence");
+        holder.numInspectedText.setText(owner.getApprovedForFemaAssistance()+"/"+owner.getTotalInspected()+" FEMA applicants inspected approved for assistance");
 
         holder.averageDamageText.setText("$"+formatter.format(owner.getAverageFemaInspectedDamage())+" damage on average ");
         holder.totalDamageText.setText("$"+formatter.format(owner.getTotalDamage())+" total damage");
