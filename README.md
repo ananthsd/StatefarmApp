@@ -54,7 +54,32 @@ Iowa DOT Data - We wanted to use government data, and we found this dataset+api 
 
 FEMA Data - comprehensive api that allows us to give it parameters such as zipcode,state, and city to get back data about damage claims. This could be useful for agents on the go who want to see if clients live in areas with historically large amounts of damage from distasters. 
 
+# High Level Code Explanation
 
+MainActivity - Only screen in the app. All network requests are started and observed here. Contains the GoogleMap View as well as some custom layouts.
+
+IOWAService/FEMAService/NomOSMService - Interfaces that retrofit uses to autogenerate classes. The are used for pull from the IOWA DOT, FEMA, and OpenStreetMap respectively.
+
+models/* - Model classes that contain annotations for GSON to serialize JSON to java objects.
+
+FemaHousingAssistenceAdapter - Recyclerview Adapter that takes a HousingAssistanceOwner object and binds the data to a view, which is then added to a recyclerview.
+
+Util - Contains methods to hide the keyboard and a static final HashMap of state name to abbrevations. Contains methods that could be used for getting locations by search through google geocoder libraries (no longer in use in favor of Open Street Map Nominatim).
+
+FemaNetworkModule/IowaNetworldModule/NominatimOSMNetworkModule (dagger) - modules used by dagger for dependency injection. This is where the objects are provided/created. The objects created here are singletons.
+
+NetworkComponent (dagger) - Combines the above modules into one component that other components can add as a dependency.
+
+MainActivityComponent (dagger) - Allows for the injection of every object in the dependecny graph of its dependencies (NetworkComponent).
+
+StateFarmCompetitionApplication - Application class that initializes the state abbreviation map and the network component.
+
+## Layouts
+activity-main - The layout for MainActivity.class. Contains the GoogleMap, FloatingActionButton, and bottom sheet.
+
+damage_summary_item - Layout for the damage items that appear in the aforementioned bottom sheet.
+
+select_search_dialog - Layout for a dialog that pops up letting users select between searching FEMA by zip code or city.
 
 # License
 Copyright [2018] [name of copyright owner]
