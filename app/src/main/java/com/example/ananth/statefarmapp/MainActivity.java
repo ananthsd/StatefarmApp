@@ -160,6 +160,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                 Toast.makeText(getApplicationContext(), "Couldn't get FEMA data by zip code", Toast.LENGTH_LONG).show();
                                                 adapter.setmDataset(new ArrayList<HousingAssistanceOwner>());
                                                 searchProgressBar.setVisibility(View.GONE);
+                                                findViewById(R.id.bottomSheet).setVisibility(View.VISIBLE);
+                                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                                             }
                                         });
                                         return;
@@ -174,6 +176,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                 Toast.makeText(getApplicationContext(), "Couldn't get FEMA data by city", Toast.LENGTH_LONG).show();
                                                 adapter.setmDataset(new ArrayList<HousingAssistanceOwner>());
                                                 searchProgressBar.setVisibility(View.GONE);
+                                                findViewById(R.id.bottomSheet).setVisibility(View.VISIBLE);
+                                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                                             }
                                         });
                                         return;
@@ -209,8 +213,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                         }
                                                         damageText.setText(owners.size() + " damage records totalling $" + Util.formatter.format(totalCost) + " \n with $" + Util.formatter.format(paidCost) + " paid out");
                                                         adapter.setmDataset(owners);
-                                                        findViewById(R.id.bottomSheet).setVisibility(View.VISIBLE);
-                                                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                                                        runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                findViewById(R.id.bottomSheet).setVisibility(View.VISIBLE);
+                                                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                                                            }
+                                                        });
                                                     } else {
                                                         if (Util.currentSearch == Util.SearchState.ZIP_CODE) {
                                                             zipCodeText.setText(address.getPostcode());
@@ -219,6 +228,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                         }
                                                         damageText.setText("No damage records found");
                                                         adapter.setmDataset(new ArrayList<HousingAssistanceOwner>());
+                                                        runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                findViewById(R.id.bottomSheet).setVisibility(View.VISIBLE);
+                                                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                                                            }
+                                                        });
                                                     }
                                                     runOnUiThread(new Runnable() {
                                                         @Override
