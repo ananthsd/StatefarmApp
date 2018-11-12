@@ -1,20 +1,6 @@
-Copyright [2018] [name of copyright owner]
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
 This product uses the Federal Emergency Management Agency’s API, but is not endorsed by FEMA.
 
-Libraries Used
+# Libraries
 Published under Apache - 2.0
 Retrofit - No changes made to library code
 https://github.com/square/retrofit
@@ -32,7 +18,7 @@ Google Maps Api:
 We follow the terms set by:
 https://cloud.google.com/maps-platform/terms/
 
-Data:
+# Data
 We abide by the Nominatum Usage Policy:
 https://operations.osmfoundation.org/policies/nominatim/
 Data gathered from Open Street Map is under the Open Data Commons Open Databse License:
@@ -42,7 +28,7 @@ https://iowadot.gov/policies_and_statements/terms-of-use
 We follow the OpenFEMA API Terms & Conditions:
 https://www.fema.gov/openfema-api-terms-conditions
 
-Reasons:
+# Reasons
 Retrofit - Very useful library that uses annotation processors and interfaces to allow for easy and customizable network requests.
 
 RxJava/RxAndroid - Allows for better management of asynchronous operations (mainly the network calls).
@@ -58,3 +44,18 @@ Iowa DOT Data - We wanted to use government data, and we found this dataset+api 
 FEMA Data - comprehensive api that allows us to give it parameters such as zipcode,state, and city to get back data about damage claims. This could be useful for agents on the go who want to see if clients live in areas with historically large amounts of damage from distasters. 
 
 
+
+# License
+Copyright [2018] [name of copyright owner]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
