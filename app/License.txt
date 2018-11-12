@@ -41,3 +41,20 @@ We abide by the terms of use set by the Iowa Department of Transportation:
 https://iowadot.gov/policies_and_statements/terms-of-use
 We follow the OpenFEMA API Terms & Conditions:
 https://www.fema.gov/openfema-api-terms-conditions
+
+Reasons:
+Retrofit - Very useful library that uses annotation processors and interfaces to allow for easy and customizable network requests.
+
+RxJava/RxAndroid - Allows for better management of asynchronous operations (mainly the network calls).
+
+Dagger - Dependency injector that uses annotation processors. Creates a dependency graph and we used it mainly useful for object reuse and ensuring objects are singletons.
+
+Google Maps Api - Free if your only displaying a graph, which is what we use it for. Also allows for the generation of heatmaps.
+
+OpenStreetMap/Nominatim - Good alternative to Google's geocoder api. Not as fast, but more reliable in our experience and the license is more permissive.
+
+Iowa DOT Data - We wanted to use government data, and we found this dataset+api combo on data.gov/ It was useful for heatmap generation as it included latitude and longitude values. Datasets like these could be useful for agents on the go who want to see if clients live in areas with high accident rates.
+
+FEMA Data - comprehensive api that allows us to give it parameters such as zipcode,state, and city to get back data about damage claims. This could be useful for agents on the go who want to see if clients live in areas with historically large amounts of damage from distasters. 
+
+
